@@ -8,7 +8,7 @@ class AuthService{
         console.log(apis.BASE_LOCAL_URL);
     }
     
-    retriveToken = ()=>{
+    retrieveToken = ()=>{
         return localStorage.getItem('Token')
     }
 
@@ -21,6 +21,7 @@ class AuthService{
     }
 
     LoginAuth = (u,p)=>{
+        console.log("request " + apis.LOGIN);
         return Post({
             url:apis.LOGIN,
             data:{

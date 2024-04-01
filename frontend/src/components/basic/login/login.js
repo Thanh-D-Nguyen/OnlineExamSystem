@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Form, Input, Button } from 'antd';
-import { UserOutlined, LockOutlined } from '@ant-design/icons'; 
+import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import './login.css';
 import { useDispatch, useSelector } from 'react-redux';
-import { login, logout } from '../../../actions/loginAction';
+import { login } from '../../../actions/loginAction';
 import auth from '../../../services/AuthServices';
 import Alert from '../../common/alert';
 import { useNavigate } from 'react-router-dom';
@@ -13,16 +13,17 @@ const Login = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const user = useSelector(state => state.user);
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
 
     const handleSubmit = async (values) => {
-        console.log('Received values of form: ', values);
         try {
+            console.log('Received values of form: ', values);
             const response = await auth.LoginAuth(values.email, values.password);
             console.log(response);
             if (response.data.success) {
                 dispatch(login(response.data.user));
                 auth.storeToken(response.data.token);
-                navigate(user.userOptions[0].link);
+                setIsLoggedIn(true);
             } else {
                 Alert('error', 'Error!', response.data.message);
             }
@@ -32,6 +33,13 @@ const Login = () => {
         }
     };
 
+    useEffect(() => {
+        if (isLoggedIn) {
+            const redirectLink = user.userOptions && user.userOptions.length > 0 ? user.userOptions[0].link : '/';
+            console.log("redirectLink ", redirectLink);
+            navigate(redirectLink);
+        }
+    }, [isLoggedIn, navigate, user.userOptions]); // Thêm các dependencies
     return (
         <div className="login-container">
             <div className="login-inner">

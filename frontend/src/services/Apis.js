@@ -45,8 +45,8 @@ const envoirnment = process.env.NODE_ENV;
 }
 */
 const apis={
-    BASE_LOCAL_URL:'http://localhost:4000',
-    BASE : 'http://localhost:4000',
+    BASE_LOCAL_URL:envoirnment==='development'?'http://localhost:3000':'',
+    BASE : envoirnment==='development'?'http://localhost:4000':'',
     LOGIN : "/api/v1/login/",
     GETDETAILSUSER : "/api/v1/user/details",
     GET_ALL_TRAINER :'/api/v1/admin/trainer/details/all',

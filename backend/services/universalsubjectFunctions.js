@@ -1,17 +1,18 @@
 //view all subjects and single subject
 let SubjectModel = require("../models/subject");
-
+const { validationResult } = require('express-validator');
+const { result } = require("./excel");
 
 let createEditsubject = (req,res,next)=>{
     var _id = req.body._id || null;
     if(req.user.type==='ADMIN'){
-    req.check('topic', `invalid topic`).notEmpty();
-    var errors = req.validationErrors()
-    if(errors){
+    var errors = validationResult(req);
+    console.log(errors);
+    if(!errors.isEmpty()){
         res.json({
             success : false,
             message : 'Invalid inputs',
-            errors : errors
+            errors : errors.array()
         })
     }
     else {
@@ -19,7 +20,6 @@ let createEditsubject = (req,res,next)=>{
         if(_id!=null){
             SubjectModel.findOneAndUpdate({
                 _id : _id,
-
             },
             {
                 topic : topic,
@@ -86,24 +86,21 @@ let createEditsubject = (req,res,next)=>{
 let getAllSubjects = (req,res,next)=>{
     SubjectModel.find({status : 1},{createdAt: 0, updatedAt : 0})
     .populate('createdBy', 'name')
-    
-    .exec(function (err, subject) {
-        if (err){
-            console.log(err)
-            res.status(500).json({
-                success : false,
-                message : "Unable to fetch data"
-            })
-        }
-        else{
-            res.json({
-                success : true,
-                message : `Success`,
-                data : subject
-            })   
-        }
-    })        
-
+    .exec()
+    .then (subject => {
+        res.json({
+            success : true,
+            message : `Success`,
+            data : subject
+        }) 
+    })
+    .catch(error => {
+        console.log(error)
+        res.status(500).json({
+            success : false,
+            message : "Unable to fetch data"
+        }) 
+    })
 }
 
 let getSingleSubject = (req,res,next)=>{
@@ -111,23 +108,21 @@ let getSingleSubject = (req,res,next)=>{
     console.log(id);
     SubjectModel.find({_id: id},{createdAt: 0, updatedAt : 0,status : 0})
     .populate('createdBy', 'name')
-    .exec(function (err, subject) {
-        if (err){
-            console.log(err)
-            res.status(500).json({
-                success : false,
-                message : "Unable to fetch data"
-            })
-        }
-        else{
-            res.json({
-                success : true,
-                message : `Success`,
-                data : subject
-            })   
-        }
-    })        
+    .exec()
+    .then(result => {
+        res.json({
+            success : true,
+            message : `Success`,
+            data : result
+        })   
+    })
+    .catch(error => {
+        console.log(error)
+        res.status(500).json({
+            success : false,
+            message : "Unable to fetch data"
+        })
+    })  
 }
-
-    module.exports = { createEditsubject ,getAllSubjects, getSingleSubject}
+module.exports = { createEditsubject ,getAllSubjects, getSingleSubject}
     

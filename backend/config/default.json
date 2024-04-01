@@ -3,7 +3,7 @@
         "connectionString": "mongodb://localhost:27017/flashcarddb"
     },
     "jwt": {
-        "secret" : "Examination Portal Application"
+        "secret" : "1fdd13e4f2eac000af3450d58e982bdbf9733954df624d0c5909f3c1fd6e8a68d101f7a36d2a7f83675efe9cf5e80acfdd52af70c61444a7dcad59f77985c76e"
     },
     "mail-credentials" : {
         "userid" :"<smtp server userId>",

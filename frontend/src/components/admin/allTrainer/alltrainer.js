@@ -180,7 +180,7 @@ class AllTrainer extends Component {
                 rowKey="_id" 
               />;
               <Modal
-                visible={this.props.admin.TrainermodalOpened}
+                open={this.props.admin.TrainermodalOpened}
                 title={false}
                 onOk={this.handleOk}
                 onCancel={this.closeModal}

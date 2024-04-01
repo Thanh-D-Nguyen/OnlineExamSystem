@@ -1,22 +1,18 @@
 let UserModel = require("../models/user");
 let tool = require("./tool");
+const { body, validationResult } = require('express-validator');
 
 let trainerRegister = (req,res,next)=>{
     console.log(req.user.type);
     var _id = req.body._id || null;
     if(req.user.type==='ADMIN'){
-        req.check('name', `Invalid name`).notEmpty();
-        if(_id==null){
-            req.check('password','Invalid password').isLength({min : 5,max :6});
-            req.check('emailid', ` Invalid email address`).isEmail().notEmpty();
-        }
-        req.check('contact','Invalid contact number').isLength({min : 13,max :13}).isNumeric({no_symbols: false});
-        var errors = req.validationErrors()
-        if(errors){
+        const errors = validationResult(req);
+        console.log(errors);
+        if(!errors.isEmpty()){
             res.json({
                 success : false,
                 message : 'Invalid inputs',
-                errors : errors
+                errors : errors.array()
             })
         }
         else {
@@ -89,8 +85,7 @@ let trainerRegister = (req,res,next)=>{
                         message : "Unable to create Trainer Profile"
                     })
                 }) 
-            }
-                       
+            }                     
         }
     }
     else{
@@ -181,7 +176,7 @@ let getSingleTrainer = (req,res,next)=>{
                 })
 
             }
-           
+        
         }).catch((err)=>{
             res.status(500).json({
                 success : false,
@@ -196,11 +191,5 @@ let getSingleTrainer = (req,res,next)=>{
         })
     }    
 }
-
-
-
-
-
-
 
 module.exports = { trainerRegister, getAllTrainers, getSingleTrainer, removeTrainer }

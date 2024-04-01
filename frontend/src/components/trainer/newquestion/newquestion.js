@@ -243,7 +243,7 @@ class NewQuestion extends Component {
         const { TextArea } = Input;
         var QuestionImageprops = {
             name: 'file',
-            action: `${apis.BASE}${apis.FILE_UPLOAD}?Token=${auth.retriveToken()}`,
+            action: `${apis.BASE}${apis.FILE_UPLOAD}?Token=${auth.retrieveToken()}`,
             listType: 'picture',
         };
 

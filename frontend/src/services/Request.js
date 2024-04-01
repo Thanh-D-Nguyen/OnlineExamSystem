@@ -1,4 +1,5 @@
 const axios = require('axios');
+import apis from './Apis';
 import LocalAuth from './AuthServices';
 const base = require("./conf").base;
 

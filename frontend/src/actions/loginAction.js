@@ -1,8 +1,8 @@
 import auth from '../services/AuthServices';
 export const login = (details)=> dispatch =>{
     dispatch({
-       type : 'LOGIN',
-       payload : details
+        type : 'LOGIN',
+        payload : details
     })
     
 }
@@ -10,14 +10,14 @@ export const login = (details)=> dispatch =>{
 
 export const logout = ()=> dispatch =>{
     dispatch({
-       type : 'LOGOUT',
-       payload1 : 'Manual Logout'
+        type : 'LOGOUT',
+        payload1 : 'Manual Logout'
     })
 }
 
 
 export const wakeUp = ()=> dispatch =>{
-    var t = auth.retriveToken() || null;
+    var t = auth.retrieveToken() || null;
     if(t && t!=='undefined'){
         auth.wakeUp(t).then((res)=>{
             console.log(`Wakeup success ${res}`)

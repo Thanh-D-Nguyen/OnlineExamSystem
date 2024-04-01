@@ -1,6 +1,7 @@
 const PORT = process.env.PORT || 4000
 var createError = require('http-errors');
 var express = require('express');
+const session = require('express-session');
 const helmet = require('helmet')
 var path = require('path');
 var logger = require('morgan');
@@ -8,15 +9,22 @@ var bodyParser = require('body-parser');
 const { check, validationResult } = require('express-validator');
 var passport = require("./services/passportconf");
 var tool = require("./services/tool");
+const cors = require('cors');
 var app = express();
 
+app.use(cors({
+    origin: 'http://localhost:3000',
+    allowedHeaders: ['Content-Type', 'Authorization', 'access-control-allow-origin', 'access-control-allow-credentials'],
+    credentials: true
+}));
 
 app.use(helmet());
-app.use(function(req, res, next) {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, access-control-allow-origin");
-    next();
-});
+// app.use(function(req, res, next) {
+//     res.header("Access-Control-Allow-Origin", "*");
+//     res.header("Access-Control-Allow-Credentials", "*");
+//     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, access-control-allow-origin, access-control-allow-credentials");
+//     next();
+// });
 
 app.use(express.json());
 //import other files
@@ -32,6 +40,8 @@ var trainee = require("./routes/trainee");
 var stopRegistration = require("./routes/stopRegistration");
 var results = require("./routes/results");
 var dummy = require("./routes/dummy");
+const { config } = require('process');
+const conf = require('./config/default.json');
 
 
 //configs
@@ -39,6 +49,12 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
+app.use(session({
+    secret: conf.jwt.secret, // Thay 'your-secret-key' bằng một chuỗi bí mật mạnh mẽ
+    resave: false,
+    saveUninitialized: false
+  }));
 
 //passport
 app.use(passport.initialize());
@@ -58,6 +74,7 @@ app.use('/api/v1/final',results);
 app.use('/api/v1/lala',dummy);
 
 
+
 app.use('/api/v1/login',login);
 
 app.get('*', (req,res) =>{
@@ -70,8 +87,10 @@ app.use(function(req, res, next) {
 });
 
 app.use((err, req, res, next)=>{
-    console.log(err);
-    res.status(err.status).json({
+    console.log("Lỗi: ", err.PORT, err.message);
+    const statusCode = err.status || 500; // Sử dụng 500 nếu không có mã trạng thái được thiết lập
+
+    res.status(statusCode).json({
         success : false,
         message : err.message
     });
@@ -79,7 +98,7 @@ app.use((err, req, res, next)=>{
 
 app.listen(PORT,(err)=>{
     if(err){
-      console.log(err);
+        console.log(err);
     }
     console.log(`Server Started. Server listening to port ${PORT}`);
 });

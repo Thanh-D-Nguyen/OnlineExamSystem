@@ -1,15 +1,16 @@
-import { configureStore, getDefaultMiddleware } from '@reduxjs/toolkit'; // Updated import statement
-import { thunk } from 'redux-thunk'; // Corrected import statement
-import logger from 'redux-logger'; // Corrected import statement
-import rootReducer from './reducers/index';
+import { configureStore } from '@reduxjs/toolkit'; // Chỉ cần import configureStore
+import logger from 'redux-logger'; // Import logger để sử dụng như một middleware tùy chọn
+import rootReducer from './reducers/index'; // Giả sử bạn có các reducer tổng hợp ở đây
 
-const initialState = {};
-const middleware = [thunk, logger];
+const initialState = {}; // initialState có thể không cần thiết nếu bạn không muốn đặt trước trạng thái
 
 const store = configureStore({
     reducer: rootReducer,
-    middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(logger), // Updated middleware setup
-    preloadedState: initialState,
+    middleware: (getDefaultMiddleware) =>
+    process.env.NODE_ENV !== 'production'
+        ? getDefaultMiddleware().concat(logger)
+        : getDefaultMiddleware(),
+    preloadedState: initialState, // chỉ cần thêm nếu bạn thực sự cần trạng thái khởi tạo ban đầu
 });
 
 export default store;

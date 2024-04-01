@@ -1,7 +1,6 @@
 import auth from './AuthServices';
 import apis from './Apis';
-
-const axios = require('axios');
+import axios from 'axios';
 
 export const SecureGet = (p)=>{
     return axios({
@@ -10,7 +9,7 @@ export const SecureGet = (p)=>{
         ...p,
         params: {
             ...p.params,
-            Token : auth.retriveToken()
+            Token : auth.retrieveToken()
         }
     })
 }
@@ -31,7 +30,7 @@ export const SecurePost =(p)=>{
         ...p,
         params: {
             ...p.params,
-            Token : auth.retriveToken()
+            Token : auth.retrieveToken()
         }
     })
 }
