@@ -11,21 +11,20 @@ let stopRegistration = (req,res,next)=>{
             if(d){
                 if(d.testbegins!=true && d.testconducted!=true){
                     TestPaperModel.findOneAndUpdate({_id : id},{isRegistrationavailable : s})      
-                    .exec(function (err){
-                        if (err){
-                            console.log(err)
-                            res.status(500).json({
-                                success : false,
-                                message : "Unable to change registration status"
-                            })
-                        }
-                        else{
-                            res.json({
-                                success : true,
-                                message : `Registration status changed!`,
-                                currentStatus : s
-                            })       
-                        }
+                    .exec()
+                    .then(results => {
+                        res.json({
+                            success : true,
+                            message : `Registration status changed!`,
+                            currentStatus : s
+                        }) 
+                    })
+                    .catch(err => {
+                        console.log(err)
+                        res.status(500).json({
+                            success : false,
+                            message : "Unable to change registration status"
+                        })
                     })
                 }
                 else{

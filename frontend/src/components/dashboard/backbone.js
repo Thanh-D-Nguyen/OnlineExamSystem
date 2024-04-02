@@ -113,6 +113,7 @@ class Dashboard extends React.Component {
         torender = <NewTest />;
         break;
       case "conducttest":
+        console.log(this.props);
         const params = queryString.parse(this.props.location.search);
         torender = <ConductTest {...params} />;
         break;

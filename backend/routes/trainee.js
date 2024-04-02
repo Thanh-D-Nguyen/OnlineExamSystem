@@ -1,8 +1,14 @@
 var express = require("express");
 var router = express.Router();
-
+const { body } = require("express-validator");
 var trainee = require("../services/trainee");
-router.post('/enter',trainee.traineeenter);
+
+
+router.post('/enter',[
+    body('emailid').isEmail().withMessage('Invalid email address.'),
+    body('name').isEmpty().withMessage('This field is required.'),
+    body('contact').isLength({min : 13,max :13}).isNumeric({no_symbols: false}).withMessage('Invalid contact.')
+],trainee.traineeenter);
 router.post('/feedback',trainee.feedback);
 router.post('/resend/testlink',trainee.resendmail);
 router.post('/correct/answers',trainee.correctAnswers);

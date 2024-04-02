@@ -2,8 +2,14 @@ var express = require("express");
 var router = express.Router();
 
 var testpaper = require("../services/testpaper");
+const { body } = require("express-validator");
 
-router.post('/new/name/check',testpaper.checkTestName)
+router.post('/new/name/check',[
+    body('type').isEmpty().withMessage('invalid type'),
+    body('title').isEmpty().withMessage('enter title'),
+    body('questions').isEmpty().withMessage('enter questions')
+],testpaper.checkTestName);
+
 router.post('/create',testpaper.createEditTest);
 router.get('/details/:_id',testpaper.getSingletest);
 router.post('/details/all',testpaper.getAlltests);
